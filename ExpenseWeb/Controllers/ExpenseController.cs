@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using ExpenseWeb.Database;
+using ExpenseWeb.Domain;
 using ExpenseWeb.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -29,7 +30,7 @@ namespace ExpenseWeb.Controllers
             return View(list);
         }
 
-        public async Task<IActionResult> Create()
+        public IActionResult Create()
         {
             var expense = new ExpenseCreateViewModel
             {
@@ -37,6 +38,22 @@ namespace ExpenseWeb.Controllers
             };
 
             return View(expense);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Create(ExpenseCreateViewModel vm)
+        {
+            var expense = new Expense
+            {
+                Description = vm.Description,
+                Date = vm.Date,
+                Amount = vm.Amount
+            };
+
+            _expenseDatabase.Insert(expense);
+
+            return RedirectToAction("Index");
         }
     }
 }
