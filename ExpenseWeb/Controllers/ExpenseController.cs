@@ -80,11 +80,6 @@ namespace ExpenseWeb.Controllers
         {
             var expense = _expenseDatabase.GetExpense(id);
 
-            if (!TryValidateModel(vm))
-            {
-                return View(vm);
-            }
-
             var expenseEdit = new ExpenseEditViewModel
             {
                 Amount = expense.Amount,
@@ -97,8 +92,13 @@ namespace ExpenseWeb.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(int id, ExpenseCreateViewModel vm)
+        public IActionResult Edit(int id, ExpenseEditViewModel vm)
         {
+            if (!TryValidateModel(vm))
+            {
+                return View(vm);
+            }
+
             var expense = new Expense
             {
                 Description = vm.Description,
