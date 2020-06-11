@@ -99,5 +99,28 @@ namespace ExpenseWeb.Controllers
 
             return RedirectToAction("Detail", new { Id = id });
         }
+
+        public IActionResult Delete(int id)
+        {
+            var expense = _expenseDatabase.GetExpense(id);
+
+            var expenseDelete = new ExpenseDeleteViewModel
+            {
+                Id = expense.Id,
+                Amount = expense.Amount,
+                Date = expense.Date,
+            };
+
+            return View(expenseDelete);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult ConfirmDelete(int id)
+        {
+            _expenseDatabase.Delete(id);
+
+            return RedirectToAction("Index");
+        }
     }
 }

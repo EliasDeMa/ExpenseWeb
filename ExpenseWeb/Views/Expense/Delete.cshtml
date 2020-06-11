@@ -1,0 +1,10 @@
+﻿@model ExpenseDeleteViewModel
+
+<p><em>Are you sure you want to delete the expense of € @Model.Amount on @Model.Date.ToShortDateString()</em></p>
+
+<form asp-controller="Expense" 
+      asp-action="ConfirmDelete" 
+      asp-route-id="@Model.Id" 
+      method="post">
+    <button class="btn btn-primary" type="submit">Confirm</button>
+</form>

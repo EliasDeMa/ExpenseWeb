@@ -9,7 +9,7 @@ else
     <table cellpadding="5">
         <thead>
             <tr>
-                <th colspan="3">Expenses</th>
+                <th colspan="4">Expenses</th>
             </tr>
         </thead>
         <tbody>
@@ -19,10 +19,15 @@ else
                     <td>@item.Date.ToShortDateString()</td>
                     <td>
                         <a asp-controller="Expense" asp-action="Detail" asp-route-id="@item.Id">
-                            details
+                            Details
                         </a>
+
                         <a asp-controller="Expense" asp-action="Edit" asp-route-id="@item.Id">
-                            edit
+                            Edit
+                        </a>
+
+                        <a asp-controller="Expense" asp-action="Delete" asp-route-id="@item.Id">
+                            Delete
                         </a>
                     </td>
                 </tr>
