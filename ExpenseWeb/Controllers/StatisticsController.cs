@@ -4,6 +4,7 @@ using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using ExpenseWeb.Database;
+using ExpenseWeb.Domain;
 using ExpenseWeb.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -20,17 +21,47 @@ namespace ExpenseWeb.Controllers
 
         public IActionResult Index()
         {
-            decimal highest = _expenseDatabase
-                .GetExpenses()
-                .Select(x => x.Amount)
-                .Max();
+            var expenses = _expenseDatabase.GetExpenses();
+
+            decimal highest = expenses.Select(x => x.Amount).Max();
+
+            decimal lowest = expenses.Select(x => x.Amount).Min();
+
+            var dayGroupings = expenses.GroupBy(x => x.Date.Date);
+
+            var monthGroupings = expenses.GroupBy(x => (x.Date.Year, x.Date.Month));
 
             var statistics = new StatisticsIndexViewModel
             {
                 Highest = highest,
+                Lowest = lowest,
+                HighestDay = GetHighestDay(dayGroupings)
             };
 
             return View(statistics);
+        }
+
+        private (DateTime?, decimal) GetHighestDay(IEnumerable<IGrouping<DateTime, Expense>> dayGroupings)
+        {
+            decimal total = 0;
+            DateTime? highestDate = null;
+
+            foreach (var date in dayGroupings)
+            {
+                decimal tempTotal = 0;
+                foreach (var item in date)
+                {
+                    tempTotal += item.Amount;
+                }
+
+                if (tempTotal > total)
+                {
+                    total = tempTotal;
+                    highestDate = date.Key;
+                }
+            }
+
+            return (highestDate, total);
         }
     }
 }

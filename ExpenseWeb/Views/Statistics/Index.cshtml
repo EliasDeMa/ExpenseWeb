@@ -2,3 +2,16 @@
 
 <strong>Highest expense</strong>
 <p><em>€ @Model.Highest</em></p>
+
+<strong>Lowest expense</strong>
+<p><em>€ @Model.Lowest</em></p>
+
+<strong>Biggest expense total in single day</strong>
+@if (Model.HighestDay.Item1.HasValue)
+{
+    <p><em>€ @Model.HighestDay.Item2 on @Model.HighestDay.Item1.Value.ToShortDateString()</em></p>
+}
+else
+{
+    <p><em>No expenses yet</em></p>
+}

@@ -8,5 +8,7 @@ namespace ExpenseWeb.Models
     public class StatisticsIndexViewModel
     {
         public decimal Highest { get; set; }
+        public decimal Lowest { get; set; }
+        public (DateTime?, decimal) HighestDay { get; set; }
     }
 }
