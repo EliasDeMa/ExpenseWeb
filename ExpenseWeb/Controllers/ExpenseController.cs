@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using ExpenseWeb.Database;
+using ExpenseWeb.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ExpenseWeb.Controllers
@@ -18,7 +19,14 @@ namespace ExpenseWeb.Controllers
 
         public IActionResult Index()
         {
-            return View();
+            var list = _expenseDatabase.GetExpenses()
+                .Select(item => new ExpenseIndexViewModel
+                {
+                    Id = item.Id,
+                    Date = item.Date
+                });
+
+            return View(list);
         }
     }
 }
