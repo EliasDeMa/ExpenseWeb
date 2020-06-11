@@ -3,4 +3,22 @@
 @if (Model == null || !Model.Any())
 {
     <p style="font-size:large"><em>No expenses available!</em></p>
-} 
+}
+else
+{
+    <table>
+        <thead>
+            <tr>
+                <th>Expenses</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.Date.ToString()</td>
+                </tr>
+            }
+        </tbody> 
+    </table>
+}
