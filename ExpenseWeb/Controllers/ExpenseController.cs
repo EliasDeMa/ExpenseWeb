@@ -25,7 +25,8 @@ namespace ExpenseWeb.Controllers
                 {
                     Id = item.Id,
                     Date = item.Date
-                });
+                })
+                .OrderBy(x=> x.Date);
 
             return View(list);
         }
