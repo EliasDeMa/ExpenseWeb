@@ -55,5 +55,49 @@ namespace ExpenseWeb.Controllers
 
             return RedirectToAction("Index");
         }
+
+        public IActionResult Detail(int id)
+        {
+            var expense = _expenseDatabase.GetExpense(id);
+
+            var expenseDetail = new ExpenseDetailViewModel
+            {
+                Amount = expense.Amount,
+                Description = expense.Description,
+                Date = expense.Date,
+            };
+
+            return View(expenseDetail);
+        }
+
+        public IActionResult Edit(int id)
+        {
+            var expense = _expenseDatabase.GetExpense(id);
+
+            var expenseEdit = new ExpenseEditViewModel
+            {
+                Amount = expense.Amount,
+                Description = expense.Description,
+                Date = expense.Date,
+            };
+
+            return View(expenseEdit);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Edit(int id, ExpenseCreateViewModel vm)
+        {
+            var expense = new Expense
+            {
+                Description = vm.Description,
+                Date = vm.Date,
+                Amount = vm.Amount
+            };
+
+            _expenseDatabase.Update(id, expense);
+
+            return RedirectToAction("Detail", new { Id = id });
+        }
     }
 }
