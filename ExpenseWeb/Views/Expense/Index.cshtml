@@ -9,16 +9,20 @@ else
     <table>
         <thead>
             <tr>
-                <th>Expenses</th>
+                <th >Expenses</th>
             </tr>
         </thead>
         <tbody>
             @foreach (var item in Model)
             {
                 <tr>
-                    <td>@item.Date.ToString()</td>
+                    <td>@item.Date.ToShortDateString()</td>
                 </tr>
             }
         </tbody> 
     </table>
 }
+
+<a asp-controller="Expense" 
+   asp-action="Create"
+   class="btn btn-primary">Add expense</a>
