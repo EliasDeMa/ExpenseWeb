@@ -28,5 +28,15 @@ namespace ExpenseWeb.Controllers
 
             return View(list);
         }
+
+        public async Task<IActionResult> Create()
+        {
+            var expense = new ExpenseCreateViewModel
+            {
+                Date = DateTime.Now,
+            };
+
+            return View(expense);
+        }
     }
 }
