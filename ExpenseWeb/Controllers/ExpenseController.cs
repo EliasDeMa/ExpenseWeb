@@ -26,7 +26,7 @@ namespace ExpenseWeb.Controllers
                     Id = item.Id,
                     Date = item.Date
                 })
-                .OrderBy(x=> x.Date);
+                .OrderBy(x => x.Date);
 
             return View(list);
         }
@@ -45,6 +45,11 @@ namespace ExpenseWeb.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Create(ExpenseCreateViewModel vm)
         {
+            if (!TryValidateModel(vm))
+            {
+                return View(vm);
+            }
+
             var expense = new Expense
             {
                 Description = vm.Description,
@@ -74,6 +79,11 @@ namespace ExpenseWeb.Controllers
         public IActionResult Edit(int id)
         {
             var expense = _expenseDatabase.GetExpense(id);
+
+            if (!TryValidateModel(vm))
+            {
+                return View(vm);
+            }
 
             var expenseEdit = new ExpenseEditViewModel
             {
