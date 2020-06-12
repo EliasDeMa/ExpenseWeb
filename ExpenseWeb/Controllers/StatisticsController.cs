@@ -55,7 +55,8 @@ namespace ExpenseWeb.Controllers
                 Lowest = lowestShow,
                 HighestDay = GetHighestDay(expenses),
                 Monthly = MonthlyExpenses(expenses),
-                HighestCategory = HighestCategoryExpense(expenses)
+                HighestCategory = HighestCategoryExpense(expenses),
+                LowestCategory = LowestCategoryExpense(expenses)
             };
 
             return View(statistics);
@@ -81,6 +82,28 @@ namespace ExpenseWeb.Controllers
 
             return (highestCategory, highestTotal);
         }
+
+        private (ExpenseCategory, decimal) LowestCategoryExpense(IEnumerable<Expense> expenses)
+        {
+            var categoryGrouping = expenses.GroupBy(x => x.Category);
+
+            decimal highestTotal = decimal.MaxValue;
+            ExpenseCategory highestCategory = ExpenseCategory.Unassigned;
+
+            foreach (var category in categoryGrouping)
+            {
+                decimal tempTotal = category.AsEnumerable().Sum(x => x.Amount);
+
+                if (tempTotal < highestTotal)
+                {
+                    highestTotal = tempTotal;
+                    highestCategory = category.Key;
+                }
+            }
+
+            return (highestCategory, highestTotal);
+        }
+
 
         private List<((int, int), decimal)> MonthlyExpenses(IEnumerable<Expense> expenses)
         {

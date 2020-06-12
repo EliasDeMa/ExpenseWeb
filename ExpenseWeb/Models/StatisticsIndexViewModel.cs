@@ -13,5 +13,6 @@ namespace ExpenseWeb.Models
         public (DateTime?, decimal) HighestDay { get; set; }
         public List<((int, int), decimal)> Monthly { get; set; }
         public (ExpenseCategory, decimal) HighestCategory { get; set; }
+        public (ExpenseCategory, decimal) LowestCategory { get; internal set; }
     }
 }

@@ -82,6 +82,22 @@ else
     </tbody>
 </table>
 
+<strong>Category with lowest total expense</strong>
+<table class="table-bordered" cellpadding="5">
+    <thead>
+        <tr>
+            <th>Category</th>
+            <th align="right">Amount</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><em>@Model.LowestCategory.Item1</em></td>
+            <td align="right"><em>@Model.LowestCategory.Item2</em></td>
+        </tr>
+    </tbody>
+</table>
+
 <strong>Monthly expenses</strong>
 @if (Model.Monthly.Count > 0)
 {
