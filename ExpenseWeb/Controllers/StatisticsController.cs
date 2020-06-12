@@ -64,44 +64,18 @@ namespace ExpenseWeb.Controllers
 
         private (ExpenseCategory, decimal) HighestCategoryExpense(IEnumerable<Expense> expenses)
         {
-            var categoryGrouping = expenses.GroupBy(x => x.Category);
-
-            decimal highestTotal = 0;
-            ExpenseCategory highestCategory = ExpenseCategory.Unassigned;
-
-            foreach (var category in categoryGrouping)
-            {
-                decimal tempTotal = category.AsEnumerable().Sum(x => x.Amount);
-
-                if (tempTotal > highestTotal)
-                {
-                    highestTotal = tempTotal;
-                    highestCategory = category.Key;
-                }
-            }
-
-            return (highestCategory, highestTotal);
+            return expenses.GroupBy(x => x.Category)
+                .Select(x => (x.Key, x.AsEnumerable().Sum(x => x.Amount)))
+                .OrderByDescending(x => x.Item2)
+                .First();
         }
 
         private (ExpenseCategory, decimal) LowestCategoryExpense(IEnumerable<Expense> expenses)
         {
-            var categoryGrouping = expenses.GroupBy(x => x.Category);
-
-            decimal highestTotal = decimal.MaxValue;
-            ExpenseCategory highestCategory = ExpenseCategory.Unassigned;
-
-            foreach (var category in categoryGrouping)
-            {
-                decimal tempTotal = category.AsEnumerable().Sum(x => x.Amount);
-
-                if (tempTotal < highestTotal)
-                {
-                    highestTotal = tempTotal;
-                    highestCategory = category.Key;
-                }
-            }
-
-            return (highestCategory, highestTotal);
+            return expenses.GroupBy(x => x.Category)
+                .Select(x => (x.Key, x.AsEnumerable().Sum(x => x.Amount)))
+                .OrderBy(x => x.Item2)
+                .First();
         }
 
 
