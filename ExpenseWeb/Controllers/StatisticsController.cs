@@ -29,7 +29,7 @@ namespace ExpenseWeb.Controllers
 
             Expense lowest = expenses.OrderBy(x => x.Amount).FirstOrDefault();
 
-            if (highest != default)
+            if (highest != null)
             {
                 highestShow = new StatisticsExpenseModel
                 {
@@ -39,7 +39,7 @@ namespace ExpenseWeb.Controllers
                 };
             }
 
-            if (lowest != default)
+            if (lowest != null)
             {
                 lowestShow = new StatisticsExpenseModel
                 {
