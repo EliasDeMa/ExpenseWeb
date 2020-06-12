@@ -65,6 +65,7 @@ namespace ExpenseWeb.Database
                 expense.Amount = updatedExpense.Amount;
                 expense.Description = updatedExpense.Description;
                 expense.Date = updatedExpense.Date;
+                expense.Category = updatedExpense.Category;
             }
         }
     }

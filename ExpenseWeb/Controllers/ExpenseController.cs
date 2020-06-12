@@ -86,6 +86,7 @@ namespace ExpenseWeb.Controllers
                 Amount = expense.Amount,
                 Description = expense.Description,
                 Date = expense.Date,
+                Category = expense.Category
             };
 
             return View(expenseEdit);
@@ -104,7 +105,8 @@ namespace ExpenseWeb.Controllers
             {
                 Description = vm.Description,
                 Date = vm.Date,
-                Amount = vm.Amount
+                Amount = vm.Amount,
+                Category = vm.Category
             };
 
             _expenseDatabase.Update(id, expense);
