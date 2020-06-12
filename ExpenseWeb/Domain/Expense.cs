@@ -17,8 +17,9 @@ namespace ExpenseWeb.Domain
 
     public enum ExpenseCategory
     {
+        Unassigned,
         Shopping,
         Barber,
-        Grocery
+        Groceries
     }
 }

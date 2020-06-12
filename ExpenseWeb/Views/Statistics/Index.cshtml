@@ -66,6 +66,22 @@ else
 
 <p></p>
 
+<strong>Category with highest total expense</strong>
+<table class="table-bordered" cellpadding="5">
+    <thead>
+        <tr>
+            <th>Category</th>
+            <th align="right">Amount</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><em>@Model.HighestCategory.Item1</em></td>
+            <td align="right"><em>@Model.HighestCategory.Item2</em></td>
+        </tr>
+    </tbody>
+</table>
+
 <strong>Monthly expenses</strong>
 @if (Model.Monthly.Count > 0)
 {
