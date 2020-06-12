@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ExpenseWeb.Domain;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -16,5 +17,7 @@ namespace ExpenseWeb.Models
         [Required(AllowEmptyStrings = false, ErrorMessage = "Expense must have an amount")]
         [Range(0, double.MaxValue, ErrorMessage = "Amount has to be positive.")]
         public decimal Amount { get; set; }
+        public ExpenseCategory Category { get; set; }
+        public IEnumerable<ExpenseCategory> Categories { get; } = Enum.GetValues(typeof(ExpenseCategory)).Cast<ExpenseCategory>();
     }
 }

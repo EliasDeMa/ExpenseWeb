@@ -54,7 +54,8 @@ namespace ExpenseWeb.Controllers
             {
                 Description = vm.Description,
                 Date = vm.Date,
-                Amount = vm.Amount
+                Amount = vm.Amount,
+                Category = vm.Category
             };
 
             _expenseDatabase.Insert(expense);

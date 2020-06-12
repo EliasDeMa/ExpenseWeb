@@ -12,5 +12,13 @@ namespace ExpenseWeb.Domain
         public string Description { get; set; }
         public DateTime Date { get; set; }
         public decimal Amount { get; set; }
+        public ExpenseCategory Category { get; set; }
+    }
+
+    public enum ExpenseCategory
+    {
+        Shopping,
+        Barber,
+        Grocery
     }
 }
