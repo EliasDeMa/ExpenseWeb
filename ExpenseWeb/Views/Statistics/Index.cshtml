@@ -15,3 +15,21 @@ else
 {
     <p><em>No expenses yet</em></p>
 }
+
+<table class="table-bordered" cellpadding="5">
+    <thead>
+        <tr>
+            <th>Month</th>
+            <th>Total Expenses</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Monthly)
+        {
+            <tr>
+                <td><em>@item.Item1.Item2/@item.Item1.Item1</em></td>
+                <td><em>€ @item.Item2</em></td>
+            </tr>
+        }
+    </tbody>
+</table>

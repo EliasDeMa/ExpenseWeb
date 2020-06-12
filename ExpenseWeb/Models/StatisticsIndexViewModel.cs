@@ -10,5 +10,6 @@ namespace ExpenseWeb.Models
         public decimal Highest { get; set; }
         public decimal Lowest { get; set; }
         public (DateTime?, decimal) HighestDay { get; set; }
+        public List<((int, int), decimal)> Monthly { get; set; }
     }
 }

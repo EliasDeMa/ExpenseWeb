@@ -23,6 +23,8 @@ namespace ExpenseWeb.Controllers
         {
             var expenses = _expenseDatabase.GetExpenses();
 
+            var monthlyExpenses = new List<((int, int), decimal)>();
+
             decimal highest = expenses.Select(x => x.Amount).Max();
 
             decimal lowest = expenses.Select(x => x.Amount).Min();
@@ -31,11 +33,19 @@ namespace ExpenseWeb.Controllers
 
             var monthGroupings = expenses.GroupBy(x => (x.Date.Year, x.Date.Month));
 
+            foreach (var item in monthGroupings)
+            {
+                decimal total = item.AsEnumerable().Sum(x => x.Amount);
+
+                monthlyExpenses.Add((item.Key, total));
+            }
+
             var statistics = new StatisticsIndexViewModel
             {
                 Highest = highest,
                 Lowest = lowest,
-                HighestDay = GetHighestDay(dayGroupings)
+                HighestDay = GetHighestDay(dayGroupings),
+                Monthly = monthlyExpenses
             };
 
             return View(statistics);
