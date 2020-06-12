@@ -22,24 +22,32 @@ namespace ExpenseWeb.Controllers
         public IActionResult Index()
         {
             var expenses = _expenseDatabase.GetExpenses();
+            StatisticsExpenseModel highestShow = null;
+            StatisticsExpenseModel lowestShow = null;
 
-            Expense highest = expenses.OrderByDescending(x => x.Amount).First();
+            Expense highest = expenses.OrderByDescending(x => x.Amount).FirstOrDefault();
 
-            Expense lowest = expenses.OrderBy(x => x.Amount).First();
+            Expense lowest = expenses.OrderBy(x => x.Amount).FirstOrDefault();
 
-            var highestShow = new StatisticsExpenseModel
+            if (highest != default)
             {
-                Amount = highest.Amount,
-                Description = highest.Description,
-                Date = highest.Date
-            };
+                highestShow = new StatisticsExpenseModel
+                {
+                    Amount = highest.Amount,
+                    Description = highest.Description,
+                    Date = highest.Date
+                };
+            }
 
-            var lowestShow = new StatisticsExpenseModel
+            if (lowest != default)
             {
-                Amount = lowest.Amount,
-                Description = lowest.Description,
-                Date = lowest.Date
-            };
+                lowestShow = new StatisticsExpenseModel
+                {
+                    Amount = lowest.Amount,
+                    Description = lowest.Description,
+                    Date = lowest.Date
+                };
+            }
 
             var statistics = new StatisticsIndexViewModel
             {

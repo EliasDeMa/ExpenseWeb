@@ -1,44 +1,58 @@
 ﻿@model StatisticsIndexViewModel
 
 <strong>Highest expense</strong>
-<table class="table-bordered" cellpadding="5">
-    <thead>
-        <tr>
-            <th>Date</th>
-            <th align="right">Amount</th>
-            <th align="right">Description</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td><em>@Model.Highest.Date.ToShortDateString()</em></td>
-            <td align="right"><em>@Model.Highest.Amount</em></td>
-            <td align="right"><em>@Model.Highest.Description</em></td>
-        </tr>
-    </tbody>
-</table>
+@if (Model.Highest != null)
+{
+    <table class="table-bordered" cellpadding="5">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th align="right">Amount</th>
+                <th align="right">Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><em>@Model.Highest.Date.ToShortDateString()</em></td>
+                <td align="right"><em>@Model.Highest.Amount</em></td>
+                <td align="right"><em>@Model.Highest.Description</em></td>
+            </tr>
+        </tbody>
+    </table>
+    <p></p>
+}
+else
+{
+    <p><em>No expenses available</em></p>
+}
 
-<p></p>
 
 <strong>Lowest expense</strong>
-<table class="table-bordered" cellpadding="5">
-    <thead>
-        <tr>
-            <th>Date</th>
-            <th align="right">Amount</th>
-            <th align="right">Description</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td><em>@Model.Lowest.Date.ToShortDateString()</em></td>
-            <td align="right"><em>@Model.Lowest.Amount</em></td>
-            <td align="right"><em>@Model.Lowest.Description</em></td>
-        </tr>
-    </tbody>
-</table>
+@if (Model.Lowest != null)
+{
+    <table class="table-bordered" cellpadding="5">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th align="right">Amount</th>
+                <th align="right">Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><em>@Model.Lowest.Date.ToShortDateString()</em></td>
+                <td align="right"><em>@Model.Lowest.Amount</em></td>
+                <td align="right"><em>@Model.Lowest.Description</em></td>
+            </tr>
+        </tbody>
+    </table>
 
-<p></p>
+    <p></p>
+}
+else
+{
+    <p><em>No expenses available</em></p>
+}
 
 <strong>Biggest expense total in a single day</strong>
 @if (Model.HighestDay.Item1.HasValue)
@@ -47,26 +61,34 @@
 }
 else
 {
-    <p><em>No expenses yet</em></p>
+    <p><em>No expenses available</em></p>
 }
 
 <p></p>
 
 <strong>Monthly expenses</strong>
-<table class="table-bordered" cellpadding="5">
-    <thead>
-        <tr>
-            <th>Month</th>
-            <th>Total Expenses</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model.Monthly)
-        {
+@if (Model.Monthly.Count > 0)
+{
+
+    <table class="table-bordered" cellpadding="5">
+        <thead>
             <tr>
-                <td><em>@item.Item1.Item2/@item.Item1.Item1</em></td>
-                <td align="right"><em>€ @item.Item2</em></td>
+                <th>Month</th>
+                <th>Total Expenses</th>
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Monthly)
+            {
+                <tr>
+                    <td><em>@item.Item1.Item2/@item.Item1.Item1</em></td>
+                    <td align="right"><em>€ @item.Item2</em></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p><em>No expenses available</em></p>
+}
