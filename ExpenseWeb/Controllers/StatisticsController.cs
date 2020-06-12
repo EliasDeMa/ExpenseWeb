@@ -23,14 +23,28 @@ namespace ExpenseWeb.Controllers
         {
             var expenses = _expenseDatabase.GetExpenses();
 
-            decimal highest = expenses.Select(x => x.Amount).Max();
+            Expense highest = expenses.OrderByDescending(x => x.Amount).First();
 
-            decimal lowest = expenses.Select(x => x.Amount).Min();
+            Expense lowest = expenses.OrderBy(x => x.Amount).First();
+
+            var highestShow = new StatisticsExpenseModel
+            {
+                Amount = highest.Amount,
+                Description = highest.Description,
+                Date = highest.Date
+            };
+
+            var lowestShow = new StatisticsExpenseModel
+            {
+                Amount = lowest.Amount,
+                Description = lowest.Description,
+                Date = lowest.Date
+            };
 
             var statistics = new StatisticsIndexViewModel
             {
-                Highest = highest,
-                Lowest = lowest,
+                Highest = highestShow,
+                Lowest = lowestShow,
                 HighestDay = GetHighestDay(expenses),
                 Monthly = MonthlyExpenses(expenses)
             };

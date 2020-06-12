@@ -1,12 +1,46 @@
 ﻿@model StatisticsIndexViewModel
 
 <strong>Highest expense</strong>
-<p><em>€ @Model.Highest</em></p>
+<table class="table-bordered" cellpadding="5">
+    <thead>
+        <tr>
+            <th>Date</th>
+            <th align="right">Amount</th>
+            <th align="right">Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><em>@Model.Highest.Date.ToShortDateString()</em></td>
+            <td align="right"><em>@Model.Highest.Amount</em></td>
+            <td align="right"><em>@Model.Highest.Description</em></td>
+        </tr>
+    </tbody>
+</table>
+
+<p></p>
 
 <strong>Lowest expense</strong>
-<p><em>€ @Model.Lowest</em></p>
+<table class="table-bordered" cellpadding="5">
+    <thead>
+        <tr>
+            <th>Date</th>
+            <th align="right">Amount</th>
+            <th align="right">Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><em>@Model.Lowest.Date.ToShortDateString()</em></td>
+            <td align="right"><em>@Model.Lowest.Amount</em></td>
+            <td align="right"><em>@Model.Lowest.Description</em></td>
+        </tr>
+    </tbody>
+</table>
 
-<strong>Biggest expense total in single day</strong>
+<p></p>
+
+<strong>Biggest expense total in a single day</strong>
 @if (Model.HighestDay.Item1.HasValue)
 {
     <p><em>€ @Model.HighestDay.Item2 on @Model.HighestDay.Item1.Value.ToShortDateString()</em></p>
@@ -16,6 +50,9 @@ else
     <p><em>No expenses yet</em></p>
 }
 
+<p></p>
+
+<strong>Monthly expenses</strong>
 <table class="table-bordered" cellpadding="5">
     <thead>
         <tr>

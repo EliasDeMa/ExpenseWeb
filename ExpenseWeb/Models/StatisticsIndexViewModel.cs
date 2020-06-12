@@ -7,8 +7,8 @@ namespace ExpenseWeb.Models
 {
     public class StatisticsIndexViewModel
     {
-        public decimal Highest { get; set; }
-        public decimal Lowest { get; set; }
+        public StatisticsExpenseModel Highest { get; set; }
+        public StatisticsExpenseModel Lowest { get; set; }
         public (DateTime?, decimal) HighestDay { get; set; }
         public List<((int, int), decimal)> Monthly { get; set; }
     }
