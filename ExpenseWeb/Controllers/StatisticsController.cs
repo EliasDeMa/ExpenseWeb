@@ -23,14 +23,24 @@ namespace ExpenseWeb.Controllers
         {
             var expenses = _expenseDatabase.GetExpenses();
 
-            var monthlyExpenses = new List<((int, int), decimal)>();
-
             decimal highest = expenses.Select(x => x.Amount).Max();
 
             decimal lowest = expenses.Select(x => x.Amount).Min();
 
-            var dayGroupings = expenses.GroupBy(x => x.Date.Date);
+            var statistics = new StatisticsIndexViewModel
+            {
+                Highest = highest,
+                Lowest = lowest,
+                HighestDay = GetHighestDay(expenses),
+                Monthly = MonthlyExpenses(expenses)
+            };
 
+            return View(statistics);
+        }
+
+        private List<((int, int), decimal)> MonthlyExpenses(IEnumerable<Expense> expenses)
+        {
+            var monthlyExpenses = new List<((int, int), decimal)>();
             var monthGroupings = expenses.GroupBy(x => (x.Date.Year, x.Date.Month));
 
             foreach (var item in monthGroupings)
@@ -40,29 +50,19 @@ namespace ExpenseWeb.Controllers
                 monthlyExpenses.Add((item.Key, total));
             }
 
-            var statistics = new StatisticsIndexViewModel
-            {
-                Highest = highest,
-                Lowest = lowest,
-                HighestDay = GetHighestDay(dayGroupings),
-                Monthly = monthlyExpenses
-            };
+            return monthlyExpenses;
+        } 
 
-            return View(statistics);
-        }
-
-        private (DateTime?, decimal) GetHighestDay(IEnumerable<IGrouping<DateTime, Expense>> dayGroupings)
+        private (DateTime?, decimal) GetHighestDay(IEnumerable<Expense> expenses)
         {
+            var dayGroupings = expenses.GroupBy(x => x.Date.Date);
+
             decimal total = 0;
             DateTime? highestDate = null;
 
             foreach (var date in dayGroupings)
             {
-                decimal tempTotal = 0;
-                foreach (var item in date)
-                {
-                    tempTotal += item.Amount;
-                }
+                decimal tempTotal = date.AsEnumerable().Sum(x => x.Amount);
 
                 if (tempTotal > total)
                 {
