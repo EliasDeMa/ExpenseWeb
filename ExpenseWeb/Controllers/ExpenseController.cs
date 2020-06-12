@@ -72,6 +72,7 @@ namespace ExpenseWeb.Controllers
                 Amount = expense.Amount,
                 Description = expense.Description,
                 Date = expense.Date,
+                Category = expense.Category
             };
 
             return View(expenseDetail);
