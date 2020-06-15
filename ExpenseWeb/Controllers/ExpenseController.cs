@@ -136,7 +136,7 @@ namespace ExpenseWeb.Controllers
                 origExpense.PhotoPath = _photoService.AddPhoto(vm.File);
             }
 
-            _ = _expenseDbContext.SaveChangesAsync();
+            _ = await _expenseDbContext.SaveChangesAsync();
 
             return RedirectToAction("Detail", new { Id = id });
         }
