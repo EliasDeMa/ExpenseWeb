@@ -67,6 +67,9 @@ namespace ExpenseWeb.Database
                 expense.Date = updatedExpense.Date;
                 expense.Category = updatedExpense.Category;
             }
+
+            if (!string.IsNullOrEmpty(updatedExpense.PhotoPath))
+                expense.PhotoPath = updatedExpense.PhotoPath;
         }
     }
 }
