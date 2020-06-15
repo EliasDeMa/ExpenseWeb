@@ -128,8 +128,6 @@ namespace ExpenseWeb.Controllers
 
             if (vm.File != null)
             {
-                var uniqueFileName = Guid.NewGuid().ToString() + Path.GetExtension(vm.File.FileName);
-                
                 if (!string.IsNullOrEmpty(origExpense.PhotoPath))
                 {
                     _photoService.DeletePhoto(origExpense.PhotoPath);
