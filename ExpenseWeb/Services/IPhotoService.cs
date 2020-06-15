@@ -8,7 +8,7 @@ namespace ExpenseWeb.Services
 {
     public interface IPhotoService
     {
-        void AddPhoto(string fileName, IFormFile file);
+        string AddPhoto(IFormFile file);
         void DeletePhoto(string fileName);
     }
 }
