@@ -11,3 +11,13 @@
 
 <strong>Category</strong>
 <p>@Model.Category</p>
+
+<strong>Photo</strong>
+@if (String.IsNullOrEmpty(Model.PhotoPath))
+{
+    <p><em>No photo available</em></p>
+}
+else
+{
+    <img src="@Model.PhotoPath" width="200" style="display:block"/>
+}
