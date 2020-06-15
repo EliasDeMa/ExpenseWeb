@@ -7,21 +7,22 @@ using ExpenseWeb.Database;
 using ExpenseWeb.Domain;
 using ExpenseWeb.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace ExpenseWeb.Controllers
 {
     public class StatisticsController : Controller
     {
-        private readonly IExpenseDatabase _expenseDatabase;
+        private readonly ExpenseDbContext _expenseDbContext;
 
-        public StatisticsController(IExpenseDatabase expenseDatabase)
+        public StatisticsController(ExpenseDbContext expenseDbContext)
         {
-            _expenseDatabase = expenseDatabase;
+            _expenseDbContext = expenseDbContext;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            var expenses = _expenseDatabase.GetExpenses();
+            var expenses = await _expenseDbContext.Expenses.ToListAsync();
             StatisticsExpenseModel highestShow = null;
             StatisticsExpenseModel lowestShow = null;
 
