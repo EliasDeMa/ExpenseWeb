@@ -1,4 +1,5 @@
 ﻿using ExpenseWeb.Domain;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -18,6 +19,8 @@ namespace ExpenseWeb.Models
         [Range(0, double.MaxValue, ErrorMessage = "Amount has to be positive.")]
         public decimal Amount { get; set; }
         public ExpenseCategory Category { get; set; }
+        public string FilePath { get; set; }
+        public IFormFile File { get; set; }
         public IEnumerable<ExpenseCategory> Categories { get; } = Enum.GetValues(typeof(ExpenseCategory)).Cast<ExpenseCategory>();
     }
 }
