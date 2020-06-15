@@ -64,9 +64,7 @@ namespace ExpenseWeb.Controllers
 
             if (vm.File != null)
             {
-                var uniquePath = Guid.NewGuid().ToString() + Path.GetExtension(vm.File.FileName);
-                _photoService.AddPhoto(uniquePath, vm.File);
-                expense.PhotoPath = "/expense-pics/" + uniquePath;
+                expense.PhotoPath = _photoService.AddPhoto(vm.File);
             }
 
             _expenseDatabase.Insert(expense);
@@ -134,11 +132,10 @@ namespace ExpenseWeb.Controllers
                 
                 if (!string.IsNullOrEmpty(origExpense.PhotoPath))
                 {
-                    _photoService.DeletePhoto(origExpense.PhotoPath.Replace("/expense-pics/", ""));
+                    _photoService.DeletePhoto(origExpense.PhotoPath);
                 }
 
-                _photoService.AddPhoto(uniqueFileName, vm.File);
-                expense.PhotoPath = "/expense-pics/" + uniqueFileName;
+                expense.PhotoPath = _photoService.AddPhoto(vm.File);
             }
             else
             {
@@ -170,7 +167,7 @@ namespace ExpenseWeb.Controllers
         public IActionResult ConfirmDelete(int id)
         {
             var expense = _expenseDatabase.GetExpense(id);
-            _photoService.DeletePhoto(expense.PhotoPath.Replace("/expense-pics/", ""));
+            _photoService.DeletePhoto(expense.PhotoPath);
             _expenseDatabase.Delete(id);
 
             return RedirectToAction("Index");
