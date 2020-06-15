@@ -8,31 +8,30 @@ using ExpenseWeb.Domain;
 using ExpenseWeb.Models;
 using ExpenseWeb.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace ExpenseWeb.Controllers
 {
     public class ExpenseController : Controller
     {
-        private readonly IExpenseDatabase _expenseDatabase;
+        private readonly ExpenseDbContext _expenseDbContext;
         private readonly IPhotoService _photoService;
 
-        public ExpenseController(IExpenseDatabase expenseDatabase, IPhotoService photoService)
+        public ExpenseController(ExpenseDbContext expenseDbContext, IPhotoService photoService)
         {
-            _expenseDatabase = expenseDatabase;
+            _expenseDbContext = expenseDbContext;
             _photoService = photoService;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            var list = _expenseDatabase.GetExpenses()
-                .Select(item => new ExpenseIndexViewModel
-                {
-                    Id = item.Id,
-                    Date = item.Date
-                })
-                .OrderBy(x => x.Date);
+            var list = await _expenseDbContext.Expenses.ToListAsync();
 
-            return View(list);
+            return View(list.Select(item => new ExpenseIndexViewModel
+            {
+                Id = item.Id,
+                Date = item.Date
+            }).OrderByDescending(item => item.Date).ToList());
         }
 
         public IActionResult Create()
@@ -47,7 +46,7 @@ namespace ExpenseWeb.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(ExpenseCreateViewModel vm)
+        public async Task<IActionResult> Create(ExpenseCreateViewModel vm)
         {
             if (!TryValidateModel(vm))
             {
@@ -67,14 +66,15 @@ namespace ExpenseWeb.Controllers
                 expense.PhotoPath = _photoService.AddPhoto(vm.File);
             }
 
-            _expenseDatabase.Insert(expense);
+            _ = await _expenseDbContext.AddAsync(expense);
+            _ = await _expenseDbContext.SaveChangesAsync();
 
             return RedirectToAction("Index");
         }
 
-        public IActionResult Detail(int id)
+        public async Task<IActionResult> Detail(int id)
         {
-            var expense = _expenseDatabase.GetExpense(id);
+            var expense = await _expenseDbContext.FindAsync<Expense>(id);
 
             var expenseDetail = new ExpenseDetailViewModel
             {
@@ -88,9 +88,9 @@ namespace ExpenseWeb.Controllers
             return View(expenseDetail);
         }
 
-        public IActionResult Edit(int id)
+        public async Task<IActionResult> Edit(int id)
         {
-            var expense = _expenseDatabase.GetExpense(id);
+            var expense = await _expenseDbContext.FindAsync<Expense>(id);
 
             var expenseEdit = new ExpenseEditViewModel
             {
@@ -110,21 +110,21 @@ namespace ExpenseWeb.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(int id, ExpenseEditViewModel vm)
+        public async Task<IActionResult> Edit(int id, ExpenseEditViewModel vm)
         {
             if (!TryValidateModel(vm))
             {
                 return View(vm);
             }
 
-            var origExpense = _expenseDatabase.GetExpense(id);
-            var expense = new Expense
-            {
-                Description = vm.Description,
-                Date = vm.Date,
-                Amount = vm.Amount,
-                Category = vm.Category
-            };
+            var origExpense = await _expenseDbContext.FindAsync<Expense>(id);
+
+
+            origExpense.Description = vm.Description;
+            origExpense.Date = vm.Date;
+            origExpense.Amount = vm.Amount;
+            origExpense.Category = vm.Category;
+
 
             if (vm.File != null)
             {
@@ -133,22 +133,17 @@ namespace ExpenseWeb.Controllers
                     _photoService.DeletePhoto(origExpense.PhotoPath);
                 }
 
-                expense.PhotoPath = _photoService.AddPhoto(vm.File);
-            }
-            else
-            {
-                if (!string.IsNullOrEmpty(origExpense.PhotoPath))
-                    expense.PhotoPath = origExpense.PhotoPath;
+                origExpense.PhotoPath = _photoService.AddPhoto(vm.File);
             }
 
-            _expenseDatabase.Update(id, expense);
+            _ = _expenseDbContext.SaveChangesAsync();
 
             return RedirectToAction("Detail", new { Id = id });
         }
 
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            var expense = _expenseDatabase.GetExpense(id);
+            var expense = await _expenseDbContext.FindAsync<Expense>(id);
 
             var expenseDelete = new ExpenseDeleteViewModel
             {
@@ -162,11 +157,17 @@ namespace ExpenseWeb.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult ConfirmDelete(int id)
+        public async Task<IActionResult> ConfirmDelete(int id)
         {
-            var expense = _expenseDatabase.GetExpense(id);
-            _photoService.DeletePhoto(expense.PhotoPath);
-            _expenseDatabase.Delete(id);
+            var expense = await _expenseDbContext.FindAsync<Expense>(id);
+
+            if (!string.IsNullOrEmpty(expense.PhotoPath))
+            {
+                _photoService.DeletePhoto(expense.PhotoPath);
+            }
+
+            _expenseDbContext.Remove<Expense>(expense);
+            _ = await _expenseDbContext.SaveChangesAsync();
 
             return RedirectToAction("Index");
         }
