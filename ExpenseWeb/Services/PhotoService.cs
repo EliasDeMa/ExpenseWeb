@@ -17,17 +17,20 @@ namespace ExpenseWeb.Services
             _hostEnvironment = hostEnvironment;
         }
 
-        public void AddPhoto(string fileName, IFormFile photo)
+        public string AddPhoto(IFormFile photo)
         {
-            var path = Path.Combine(_hostEnvironment.WebRootPath, "expense-pics", fileName);
+            string uniqueFileName = Guid.NewGuid().ToString() + Path.GetExtension(photo.FileName);
+            var path = Path.Combine(_hostEnvironment.WebRootPath, "expense-pics", uniqueFileName);
 
             using var stream = new FileStream(path, FileMode.Create);
             photo.CopyTo(stream);
+
+            return "/expense-pics/" + uniqueFileName;
         }
 
         public void DeletePhoto(string fileName)
         {
-            var prevPath = Path.Combine(_hostEnvironment.WebRootPath, "expense-pics", fileName);
+            var prevPath = Path.Combine(_hostEnvironment.WebRootPath, "expense-pics", fileName.Replace("/expense-pics/", ""));
             System.IO.File.Delete(prevPath);
         }
     }
