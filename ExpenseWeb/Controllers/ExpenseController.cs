@@ -74,7 +74,7 @@ namespace ExpenseWeb.Controllers
 
         public async Task<IActionResult> Detail(int id)
         {
-            var expense = await _expenseDbContext.FindAsync<Expense>(id);
+            var expense = await _expenseDbContext.Expenses.FindAsync(id);
 
             var expenseDetail = new ExpenseDetailViewModel
             {
@@ -90,7 +90,7 @@ namespace ExpenseWeb.Controllers
 
         public async Task<IActionResult> Edit(int id)
         {
-            var expense = await _expenseDbContext.FindAsync<Expense>(id);
+            var expense = await _expenseDbContext.Expenses.FindAsync(id);
 
             var expenseEdit = new ExpenseEditViewModel
             {
@@ -117,7 +117,7 @@ namespace ExpenseWeb.Controllers
                 return View(vm);
             }
 
-            var origExpense = await _expenseDbContext.FindAsync<Expense>(id);
+            var origExpense = await _expenseDbContext.Expenses.FindAsync(id);
 
             origExpense.Description = vm.Description;
             origExpense.Date = vm.Date;
@@ -142,7 +142,7 @@ namespace ExpenseWeb.Controllers
 
         public async Task<IActionResult> Delete(int id)
         {
-            var expense = await _expenseDbContext.FindAsync<Expense>(id);
+            var expense = await _expenseDbContext.Expenses.FindAsync(id);
 
             var expenseDelete = new ExpenseDeleteViewModel
             {
@@ -158,14 +158,14 @@ namespace ExpenseWeb.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ConfirmDelete(int id)
         {
-            var expense = await _expenseDbContext.FindAsync<Expense>(id);
+            var expense = await _expenseDbContext.Expenses.FindAsync(id);
 
             if (!string.IsNullOrEmpty(expense.PhotoPath))
             {
                 _photoService.DeletePhoto(expense.PhotoPath);
             }
 
-            _expenseDbContext.Remove<Expense>(expense);
+            _expenseDbContext.Expenses.Remove(expense);
             await _expenseDbContext.SaveChangesAsync();
 
             return RedirectToAction("Index");
