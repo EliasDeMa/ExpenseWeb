@@ -102,6 +102,11 @@ namespace ExpenseWeb.Controllers
                 Category = expense.Category
             };
 
+            if (!string.IsNullOrEmpty(expense.PhotoPath))
+            {
+                expenseEdit.FilePath = expense.PhotoPath;
+            }
+
             return View(expenseEdit);
         }
 
@@ -114,6 +119,7 @@ namespace ExpenseWeb.Controllers
                 return View(vm);
             }
 
+            var origExpense = _expenseDatabase.GetExpense(id);
             var expense = new Expense
             {
                 Description = vm.Description,
@@ -121,6 +127,24 @@ namespace ExpenseWeb.Controllers
                 Amount = vm.Amount,
                 Category = vm.Category
             };
+
+            if (vm.File != null)
+            {
+                var uniqueFileName = Guid.NewGuid().ToString() + Path.GetExtension(vm.File.FileName);
+                
+                if (!string.IsNullOrEmpty(origExpense.PhotoPath))
+                {
+                    _photoService.DeletePhoto(origExpense.PhotoPath.Replace("/expense-pics/", ""));
+                }
+
+                _photoService.AddPhoto(uniqueFileName, vm.File);
+                expense.PhotoPath = "/expense-pics/" + uniqueFileName;
+            }
+            else
+            {
+                if (!string.IsNullOrEmpty(origExpense.PhotoPath))
+                    expense.PhotoPath = origExpense.PhotoPath;
+            }
 
             _expenseDatabase.Update(id, expense);
 
@@ -145,6 +169,8 @@ namespace ExpenseWeb.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult ConfirmDelete(int id)
         {
+            var expense = _expenseDatabase.GetExpense(id);
+            _photoService.DeletePhoto(expense.PhotoPath.Replace("/expense-pics/", ""));
             _expenseDatabase.Delete(id);
 
             return RedirectToAction("Index");
