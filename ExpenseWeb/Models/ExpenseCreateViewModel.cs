@@ -1,4 +1,5 @@
 ﻿using ExpenseWeb.Domain;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Collections.Generic;
@@ -21,5 +22,6 @@ namespace ExpenseWeb.Models
         public ExpenseCategory Category { get; set; }
 
         public IEnumerable<ExpenseCategory> Categories { get; } = Enum.GetValues(typeof(ExpenseCategory)).Cast<ExpenseCategory>();
+        public IFormFile File { get; set; }
     }
 }
