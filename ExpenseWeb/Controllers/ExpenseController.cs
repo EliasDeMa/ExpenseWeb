@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using ExpenseWeb.Database;
 using ExpenseWeb.Domain;
 using ExpenseWeb.Models;
+using ExpenseWeb.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ExpenseWeb.Controllers
@@ -12,10 +14,12 @@ namespace ExpenseWeb.Controllers
     public class ExpenseController : Controller
     {
         private readonly IExpenseDatabase _expenseDatabase;
+        private readonly IPhotoService _photoService;
 
-        public ExpenseController(IExpenseDatabase expenseDatabase)
+        public ExpenseController(IExpenseDatabase expenseDatabase, IPhotoService photoService)
         {
             _expenseDatabase = expenseDatabase;
+            _photoService = photoService;
         }
 
         public IActionResult Index()
@@ -58,6 +62,13 @@ namespace ExpenseWeb.Controllers
                 Category = vm.Category
             };
 
+            if (vm.File != null)
+            {
+                var uniquePath = Guid.NewGuid().ToString() + Path.GetExtension(vm.File.FileName);
+                _photoService.AddPhoto(uniquePath, vm.File);
+                expense.PhotoPath = "/expense-pics/" + uniquePath;
+            }
+
             _expenseDatabase.Insert(expense);
 
             return RedirectToAction("Index");
@@ -72,7 +83,8 @@ namespace ExpenseWeb.Controllers
                 Amount = expense.Amount,
                 Description = expense.Description,
                 Date = expense.Date,
-                Category = expense.Category
+                Category = expense.Category,
+                PhotoPath = expense.PhotoPath
             };
 
             return View(expenseDetail);
