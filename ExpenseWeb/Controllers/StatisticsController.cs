@@ -81,38 +81,19 @@ namespace ExpenseWeb.Controllers
 
         private List<((int, int), decimal)> MonthlyExpenses(IEnumerable<Expense> expenses)
         {
-            var monthlyExpenses = new List<((int, int), decimal)>();
-            var monthGroupings = expenses.GroupBy(x => (x.Date.Year, x.Date.Month));
-
-            foreach (var item in monthGroupings)
-            {
-                decimal total = item.AsEnumerable().Sum(x => x.Amount);
-
-                monthlyExpenses.Add((item.Key, total));
-            }
-
-            return monthlyExpenses;
+            return expenses.GroupBy(x => (x.Date.Year, x.Date.Month))
+                .Select(item => (item.Key, item.AsEnumerable().Sum(x => x.Amount)))
+                .OrderByDescending(item => item.Key.Year)
+                .ThenByDescending(x => x.Key.Month)
+                .ToList();
         } 
 
         private (DateTime?, decimal) GetHighestDay(IEnumerable<Expense> expenses)
         {
-            var dayGroupings = expenses.GroupBy(x => x.Date.Date);
-
-            decimal total = 0;
-            DateTime? highestDate = null;
-
-            foreach (var date in dayGroupings)
-            {
-                decimal tempTotal = date.AsEnumerable().Sum(x => x.Amount);
-
-                if (tempTotal > total)
-                {
-                    total = tempTotal;
-                    highestDate = date.Key;
-                }
-            }
-
-            return (highestDate, total);
+            return expenses.GroupBy(x => x.Date.Date)
+                .Select(x => (x.Key, x.AsEnumerable().Sum(x => x.Amount)))
+                .OrderByDescending(x => x.Item2)
+                .First();
         }
     }
 }
