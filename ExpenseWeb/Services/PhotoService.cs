@@ -27,7 +27,7 @@ namespace ExpenseWeb.Services
 
         public void DeletePhoto(string fileName)
         {
-            var prevPath = Path.Combine(_hostEnvironment.WebRootPath, "photos", fileName);
+            var prevPath = Path.Combine(_hostEnvironment.WebRootPath, "expense-pics", fileName);
             System.IO.File.Delete(prevPath);
         }
     }
