@@ -66,8 +66,8 @@ namespace ExpenseWeb.Controllers
                 expense.PhotoPath = _photoService.AddPhoto(vm.File);
             }
 
-            _ = await _expenseDbContext.AddAsync(expense);
-            _ = await _expenseDbContext.SaveChangesAsync();
+            await _expenseDbContext.AddAsync(expense);
+            await _expenseDbContext.SaveChangesAsync();
 
             return RedirectToAction("Index");
         }
@@ -119,7 +119,6 @@ namespace ExpenseWeb.Controllers
 
             var origExpense = await _expenseDbContext.FindAsync<Expense>(id);
 
-
             origExpense.Description = vm.Description;
             origExpense.Date = vm.Date;
             origExpense.Amount = vm.Amount;
@@ -136,7 +135,7 @@ namespace ExpenseWeb.Controllers
                 origExpense.PhotoPath = _photoService.AddPhoto(vm.File);
             }
 
-            _ = await _expenseDbContext.SaveChangesAsync();
+            await _expenseDbContext.SaveChangesAsync();
 
             return RedirectToAction("Detail", new { Id = id });
         }
@@ -167,7 +166,7 @@ namespace ExpenseWeb.Controllers
             }
 
             _expenseDbContext.Remove<Expense>(expense);
-            _ = await _expenseDbContext.SaveChangesAsync();
+            await _expenseDbContext.SaveChangesAsync();
 
             return RedirectToAction("Index");
         }
