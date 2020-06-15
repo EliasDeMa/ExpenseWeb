@@ -1,6 +1,6 @@
 ﻿@model ExpenseEditViewModel
 
-    <form asp-action="Edit" asp-controller="Expense" method="post">
+    <form asp-action="Edit" asp-controller="Expense" method="post" enctype="multipart/form-data">
         <div class="form-group">
             <label asp-for="Description"></label>
             <input asp-for="Description" class="form-control" />
@@ -22,6 +22,22 @@
             <label asp-for="Category"></label>
             <select asp-for="Category" asp-items="@(new SelectList(Model.Categories))">
             </select>
+        </div>
+
+        <div>
+            @if (!string.IsNullOrEmpty(Model.FilePath))
+            {
+                <img src="@Model.FilePath" />
+            }
+            else
+            {
+                <p>No avatar available</p>
+            }
+        </div>
+
+        <div class="form-group">
+            <label asp-for="File"></label>
+            <input asp-for="File" type="file" />
         </div>
 
         <button class="btn btn-primary" type="submit">Enter</button>
