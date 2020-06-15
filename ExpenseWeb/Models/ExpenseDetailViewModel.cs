@@ -12,5 +12,6 @@ namespace ExpenseWeb.Models
         public DateTime Date { get; set; }
         public decimal Amount { get; set; }
         public ExpenseCategory Category { get; set; }
+        public string PhotoPath { get; set; }
     }
 }
