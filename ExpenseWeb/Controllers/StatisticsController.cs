@@ -50,30 +50,36 @@ namespace ExpenseWeb.Controllers
                 };
             }
 
+            var (highestCategoryId, highestCategoryExpense) = HighestCategoryExpense(expenses);
+            var highestCategoryItem = await _expenseDbContext.Categories.FindAsync(highestCategoryId);
+
+            var (lowestCategoryId, lowestCategoryExpense) = LowestCategoryExpense(expenses);
+            var lowestCategoryItem = await _expenseDbContext.Categories.FindAsync(lowestCategoryId);
+
             var statistics = new StatisticsIndexViewModel
             {
                 Highest = highestShow,
                 Lowest = lowestShow,
                 HighestDay = GetHighestDay(expenses),
                 Monthly = MonthlyExpenses(expenses),
-                HighestCategory = HighestCategoryExpense(expenses),
-                LowestCategory = LowestCategoryExpense(expenses)
+                HighestCategory = (highestCategoryItem.Description, highestCategoryExpense),
+                LowestCategory = (lowestCategoryItem.Description, lowestCategoryExpense)
             };
 
             return View(statistics);
         }
 
-        private (ExpenseCategory, decimal) HighestCategoryExpense(IEnumerable<Expense> expenses)
+       private (int, decimal) HighestCategoryExpense(IEnumerable<Expense> expenses)
         {
-            return expenses.GroupBy(x => x.Category)
+            return expenses.GroupBy(x => x.CategoryId)
                 .Select(x => (x.Key, x.AsEnumerable().Sum(x => x.Amount)))
                 .OrderByDescending(x => x.Item2)
                 .First();
         }
 
-        private (ExpenseCategory, decimal) LowestCategoryExpense(IEnumerable<Expense> expenses)
+       private (int, decimal) LowestCategoryExpense(IEnumerable<Expense> expenses)
         {
-            return expenses.GroupBy(x => x.Category)
+            return expenses.GroupBy(x => x.CategoryId)
                 .Select(x => (x.Key, x.AsEnumerable().Sum(x => x.Amount)))
                 .OrderBy(x => x.Item2)
                 .First();

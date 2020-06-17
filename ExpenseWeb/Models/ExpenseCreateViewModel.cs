@@ -19,9 +19,9 @@ namespace ExpenseWeb.Models
         [Required(AllowEmptyStrings = false, ErrorMessage = "Expense must have an amount")]
         [Range(0, double.MaxValue, ErrorMessage = "Amount has to be positive.")]
         public decimal Amount { get; set; }
-        public ExpenseCategory Category { get; set; }
+        public int SelectedCategory { get; set; }
 
-        public IEnumerable<ExpenseCategory> Categories { get; } = Enum.GetValues(typeof(ExpenseCategory)).Cast<ExpenseCategory>();
+        public IEnumerable<SelectListItem> Categories { get; set; } = new List<SelectListItem>();
         public IFormFile File { get; set; }
     }
 }

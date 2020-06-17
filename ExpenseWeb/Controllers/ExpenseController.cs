@@ -8,6 +8,7 @@ using ExpenseWeb.Domain;
 using ExpenseWeb.Models;
 using ExpenseWeb.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
 namespace ExpenseWeb.Controllers
@@ -34,11 +35,20 @@ namespace ExpenseWeb.Controllers
             }).OrderByDescending(item => item.Date).ToList());
         }
 
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
+            var list = await _expenseDbContext.Categories.ToListAsync();
+
             var expense = new ExpenseCreateViewModel
             {
                 Date = DateTime.Now,
+                Categories = list.Select(item =>
+                    new SelectListItem
+                    {
+                        Value = item.Id.ToString(),
+                        Text = item.Description,
+                    }
+                )
             };
 
             return View(expense);
@@ -58,7 +68,7 @@ namespace ExpenseWeb.Controllers
                 Description = vm.Description,
                 Date = vm.Date,
                 Amount = vm.Amount,
-                Category = vm.Category
+                CategoryId = vm.SelectedCategory
             };
 
             if (vm.File != null)
@@ -74,14 +84,15 @@ namespace ExpenseWeb.Controllers
 
         public async Task<IActionResult> Detail(int id)
         {
-            var expense = await _expenseDbContext.Expenses.FindAsync(id);
+            var expense = await _expenseDbContext.Expenses.Include(x => x.Category)
+                .FirstOrDefaultAsync(expense => expense.Id == id);
 
             var expenseDetail = new ExpenseDetailViewModel
             {
                 Amount = expense.Amount,
                 Description = expense.Description,
                 Date = expense.Date,
-                Category = expense.Category,
+                Category = expense.Category.Description,
                 PhotoPath = expense.PhotoPath
             };
 
@@ -91,13 +102,20 @@ namespace ExpenseWeb.Controllers
         public async Task<IActionResult> Edit(int id)
         {
             var expense = await _expenseDbContext.Expenses.FindAsync(id);
+            var categories = await _expenseDbContext.Categories.ToListAsync();
 
             var expenseEdit = new ExpenseEditViewModel
             {
                 Amount = expense.Amount,
                 Description = expense.Description,
                 Date = expense.Date,
-                Category = expense.Category
+                Categories = categories.Select(item =>
+                    new SelectListItem
+                    {
+                        Value = item.Id.ToString(),
+                        Text = item.Description,
+                    }
+                )
             };
 
             if (!string.IsNullOrEmpty(expense.PhotoPath))
@@ -122,7 +140,7 @@ namespace ExpenseWeb.Controllers
             origExpense.Description = vm.Description;
             origExpense.Date = vm.Date;
             origExpense.Amount = vm.Amount;
-            origExpense.Category = vm.Category;
+            origExpense.CategoryId = vm.SelectedCategory;
 
 
             if (vm.File != null)

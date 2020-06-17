@@ -12,15 +12,13 @@ namespace ExpenseWeb.Domain
         public string Description { get; set; }
         public DateTime Date { get; set; }
         public decimal Amount { get; set; }
-        public ExpenseCategory Category { get; set; }
+        public Category Category { get; set; }
+        public int CategoryId { get; set; }
         public string PhotoPath { get; set; }
     }
 
     public enum ExpenseCategory
     {
-        Unassigned,
-        Shopping,
-        Barber,
-        Groceries
+
     }
 }
