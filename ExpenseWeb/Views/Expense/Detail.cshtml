@@ -12,6 +12,14 @@
 <strong>Category</strong>
 <p>@Model.Category</p>
 
+<strong>Tags</strong>
+<ul>
+    @foreach (var item in Model.Tags)
+    {
+        <li>@item</li>
+    }
+</ul>
+
 <strong>Photo</strong>
 @if (String.IsNullOrEmpty(Model.PhotoPath))
 {

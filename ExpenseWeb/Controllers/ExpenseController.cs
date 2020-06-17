@@ -37,18 +37,24 @@ namespace ExpenseWeb.Controllers
 
         public async Task<IActionResult> Create()
         {
-            var list = await _expenseDbContext.Categories.ToListAsync();
+            var categories = await _expenseDbContext.Categories.ToListAsync();
+            var tags = await _expenseDbContext.Tags.ToListAsync();
 
             var expense = new ExpenseCreateViewModel
             {
                 Date = DateTime.Now,
-                Categories = list.Select(item =>
+                Categories = categories.Select(item =>
                     new SelectListItem
                     {
                         Value = item.Id.ToString(),
                         Text = item.Description,
-                    }
-                )
+                    }),
+                Tags = tags.Select(item =>
+                    new SelectListItem
+                    {
+                        Value = item.Id.ToString(),
+                        Text = item.Name,
+                    })
             };
 
             return View(expense);
@@ -68,7 +74,8 @@ namespace ExpenseWeb.Controllers
                 Description = vm.Description,
                 Date = vm.Date,
                 Amount = vm.Amount,
-                CategoryId = vm.SelectedCategory
+                CategoryId = vm.SelectedCategory,
+                ExpenseTags = vm.SelectedTags.Select(id => new ExpenseTag { TagId = id }).ToList()
             };
 
             if (vm.File != null)
@@ -84,7 +91,10 @@ namespace ExpenseWeb.Controllers
 
         public async Task<IActionResult> Detail(int id)
         {
-            var expense = await _expenseDbContext.Expenses.Include(x => x.Category)
+            var expense = await _expenseDbContext.Expenses
+                .Include(x => x.Category)
+                .Include(x => x.ExpenseTags)
+                .ThenInclude(et => et.Tag)
                 .FirstOrDefaultAsync(expense => expense.Id == id);
 
             var expenseDetail = new ExpenseDetailViewModel
@@ -93,7 +103,8 @@ namespace ExpenseWeb.Controllers
                 Description = expense.Description,
                 Date = expense.Date,
                 Category = expense.Category.Description,
-                PhotoPath = expense.PhotoPath
+                PhotoPath = expense.PhotoPath,
+                Tags = expense.ExpenseTags.Select(item => item.Tag.Name)
             };
 
             return View(expenseDetail);

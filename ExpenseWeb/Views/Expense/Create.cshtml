@@ -1,36 +1,43 @@
 ﻿@model ExpenseCreateViewModel
 
-<form asp-action="Create" 
-      asp-controller="Expense" 
-      method="post" 
-      enctype="multipart/form-data">
-    <div class="form-group">
-        <label asp-for="Description"></label>
-        <input asp-for="Description" class="form-control" />    
-    </div>
+    <form asp-action="Create"
+          asp-controller="Expense"
+          method="post"
+          enctype="multipart/form-data">
+        <div class="form-group">
+            <label asp-for="Description"></label>
+            <input asp-for="Description" class="form-control" />
+        </div>
 
-    <div class="form-group">
-        <label asp-for="Amount"></label>
-        <input asp-for="Amount" class="form-control" />
-        <span class="text-danger" asp-validation-for="Amount"></span>
-    </div>
+        <div class="form-group">
+            <label asp-for="Amount"></label>
+            <input asp-for="Amount" class="form-control" />
+            <span class="text-danger" asp-validation-for="Amount"></span>
+        </div>
 
-    <div class="form-group">
-        <label asp-for="Date"></label>
-        <input asp-for="Date" class="form-control" type="date" />
-        <span class="text-danger" asp-validation-for="Date"></span>
-    </div>
+        <div class="form-group">
+            <label asp-for="Date"></label>
+            <input asp-for="Date" class="form-control" type="date" />
+            <span class="text-danger" asp-validation-for="Date"></span>
+        </div>
 
-    <div class="form-group">
-        <label asp-for="SelectedCategory"></label>
-        <select asp-for="SelectedCategory" asp-items="@Model.Categories">
-        </select>
-    </div>
+        <div class="form-group">
+            <label asp-for="SelectedCategory"></label>
+            <select asp-for="SelectedCategory" asp-items="@Model.Categories"></select>
+            <span class="text-danger" asp-validation-for="SelectedCategory"></span>
+        </div>
 
-    <div class="form-group">
-        <label asp-for="File"></label>
-        <input asp-for="File" type="file"/>
-    </div>
+        <div class="form-group">
+            <label asp-for="SelectedTags"></label>
+            <select multiple asp-for="SelectedTags" asp-items="@Model.Tags"></select>
+            <span class="text-danger" asp-validation-for="SelectedTags"></span>
+        </div>
 
-    <button class="btn btn-primary" type="submit">Enter</button>
-</form>
+        <div class="form-group">
+            <label asp-for="File"></label>
+            <input asp-for="File" type="file" />
+            <span class="text-danger" asp-validation-for="File"></span>
+        </div>
+
+        <button class="btn btn-primary" type="submit">Enter</button>
+    </form>

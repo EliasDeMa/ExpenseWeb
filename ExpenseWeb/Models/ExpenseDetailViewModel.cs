@@ -13,5 +13,6 @@ namespace ExpenseWeb.Models
         public decimal Amount { get; set; }
         public string Category { get; set; }
         public string PhotoPath { get; set; }
+        public IEnumerable<string> Tags { get; set; }
     }
 }
