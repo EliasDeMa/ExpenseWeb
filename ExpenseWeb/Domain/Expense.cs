@@ -15,10 +15,7 @@ namespace ExpenseWeb.Domain
         public Category Category { get; set; }
         public int CategoryId { get; set; }
         public string PhotoPath { get; set; }
-    }
 
-    public enum ExpenseCategory
-    {
-
+        public ICollection<ExpenseTag> ExpenseTags { get; set; }
     }
 }
