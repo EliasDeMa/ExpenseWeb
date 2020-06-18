@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using ExpenseWeb.Database;
 using ExpenseWeb.Domain;
@@ -117,7 +118,7 @@ namespace ExpenseWeb.Controllers
 
         public async Task<IActionResult> Edit(int id)
         {
-            var expense = await _expenseDbContext.Expenses.FindAsync(id);
+            var expense = await _expenseDbContext.Expenses.Include(x => x.ExpenseTags).FirstOrDefaultAsync(x => x.Id == id);
             var categories = await _expenseDbContext.Categories.ToListAsync();
             var tags = await _expenseDbContext.Tags.ToListAsync();
 
@@ -137,6 +138,7 @@ namespace ExpenseWeb.Controllers
                     {
                         Value = item.Id.ToString(),
                         Text = item.Name,
+                        Selected = expense.ExpenseTags.Where(i => i.TagId == item.Id).Any()
                     })
             };
 
