@@ -10,6 +10,7 @@ using ExpenseWeb.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace ExpenseWeb.Controllers
 {
@@ -17,16 +18,20 @@ namespace ExpenseWeb.Controllers
     {
         private readonly ExpenseDbContext _expenseDbContext;
         private readonly IPhotoService _photoService;
+        private readonly ILogger<ExpenseController> _logger;
 
-        public ExpenseController(ExpenseDbContext expenseDbContext, IPhotoService photoService)
+        public ExpenseController(ExpenseDbContext expenseDbContext, IPhotoService photoService,
+            ILogger<ExpenseController> logger)
         {
             _expenseDbContext = expenseDbContext;
             _photoService = photoService;
+            _logger = logger;
         }
 
         public async Task<IActionResult> Index()
         {
             var list = await _expenseDbContext.Expenses.ToListAsync();
+
 
             return View(list.Select(item => new ExpenseIndexViewModel
             {
