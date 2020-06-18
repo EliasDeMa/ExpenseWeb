@@ -41,8 +41,8 @@ namespace ExpenseWeb.Controllers
         {
             return View(new DeveloperViewModel
             {
-                FirstName = _configuration["FirstName"],
-                LastName = _configuration["LastName"]
+                FirstName = _configuration["Developer:FirstName"],
+                LastName = _configuration["Developer:LastName"]
             });
         }
     }
