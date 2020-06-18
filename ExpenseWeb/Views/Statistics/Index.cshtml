@@ -67,43 +67,57 @@ else
 <p></p>
 
 <strong>Category with highest total expense</strong>
-<table class="table-bordered" cellpadding="5">
-    <thead>
-        <tr>
-            <th>Category</th>
-            <th align="right">Amount</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td><em>@Model.HighestCategory.Item1</em></td>
-            <td align="right"><em>€ @Model.HighestCategory.Item2</em></td>
-        </tr>
-    </tbody>
-</table>
-
-<p></p>
+@if (Model.HighestCategory == default)
+{
+    <p><em>No expenses available</em></p>
+}
+else
+{
+    <table class="table-bordered" cellpadding="5">
+        <thead>
+            <tr>
+                <th>Category</th>
+                <th align="right">Amount</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><em>@Model.HighestCategory.Item1</em></td>
+                <td align="right"><em>€ @Model.HighestCategory.Item2</em></td>
+            </tr>
+        </tbody>
+    </table>
+    <p></p>
+}
 
 <strong>Category with lowest total expense</strong>
-<table class="table-bordered" cellpadding="5">
-    <thead>
-        <tr>
-            <th>Category</th>
-            <th align="right">Amount</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td><em>@Model.LowestCategory.Item1</em></td>
-            <td align="right"><em>€ @Model.LowestCategory.Item2</em></td>
-        </tr>
-    </tbody>
-</table>
+@if (Model.LowestCategory == default)
+{
+    <p><em>No expenses available</em></p>
+}
+else
+{
 
-<p></p>
+    <table class="table-bordered" cellpadding="5">
+        <thead>
+            <tr>
+                <th>Category</th>
+                <th align="right">Amount</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><em>@Model.LowestCategory.Item1</em></td>
+                <td align="right"><em>€ @Model.LowestCategory.Item2</em></td>
+            </tr>
+        </tbody>
+    </table>
+    <p></p>
+}
+
 
 <strong>Monthly expenses</strong>
-@if (Model.Monthly.Count > 0)
+@if (Model.Monthly != null && Model.Monthly.Count > 0)
 {
 
     <table class="table-bordered" cellpadding="5">

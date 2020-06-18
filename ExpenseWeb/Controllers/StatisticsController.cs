@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.Tracing;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
@@ -50,21 +51,23 @@ namespace ExpenseWeb.Controllers
                 };
             }
 
-            var (highestCategoryId, highestCategoryExpense) = HighestCategoryExpense(expenses);
-            var highestCategoryItem = await _expenseDbContext.Categories.FindAsync(highestCategoryId);
+            var statistics = new StatisticsIndexViewModel();
 
-            var (lowestCategoryId, lowestCategoryExpense) = LowestCategoryExpense(expenses);
-            var lowestCategoryItem = await _expenseDbContext.Categories.FindAsync(lowestCategoryId);
-
-            var statistics = new StatisticsIndexViewModel
+            if (expenses.Count > 0)
             {
-                Highest = highestShow,
-                Lowest = lowestShow,
-                HighestDay = GetHighestDay(expenses),
-                Monthly = MonthlyExpenses(expenses),
-                HighestCategory = (highestCategoryItem.Description, highestCategoryExpense),
-                LowestCategory = (lowestCategoryItem.Description, lowestCategoryExpense)
-            };
+                var (highestCategoryId, highestCategoryExpense) = HighestCategoryExpense(expenses);
+                var highestCategoryItem = await _expenseDbContext.Categories.FindAsync(highestCategoryId);
+
+                var (lowestCategoryId, lowestCategoryExpense) = LowestCategoryExpense(expenses);
+                var lowestCategoryItem = await _expenseDbContext.Categories.FindAsync(lowestCategoryId);
+
+                statistics.Highest = highestShow;
+                statistics.Lowest = lowestShow;
+                statistics.HighestDay = GetHighestDay(expenses);
+                statistics.Monthly = MonthlyExpenses(expenses);
+                statistics.HighestCategory = (highestCategoryItem.Description, highestCategoryExpense);
+                statistics.LowestCategory = (lowestCategoryItem.Description, lowestCategoryExpense);
+            }
 
             return View(statistics);
         }
