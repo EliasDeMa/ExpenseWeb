@@ -20,9 +20,7 @@
 
         <div class="form-group">
             <label asp-for="SelectedCategory"></label>
-            <select asp-for="SelectedCategory"
-                    asp-items="@Model.Categories">
-            </select>
+            @Html.DropDownListFor(model => model.SelectedCategory, new SelectList(Model.Categories, "Value", "Text"))
             <span class="text-danger" asp-validation-for="SelectedCategory"></span>
         </div>
 

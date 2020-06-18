@@ -127,6 +127,7 @@ namespace ExpenseWeb.Controllers
                 Amount = expense.Amount,
                 Description = expense.Description,
                 Date = expense.Date,
+                SelectedCategory = expense.Category.Id,
                 Categories = categories.Select(item =>
                     new SelectListItem
                     {
