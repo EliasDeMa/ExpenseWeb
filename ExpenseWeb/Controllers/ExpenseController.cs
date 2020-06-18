@@ -114,6 +114,7 @@ namespace ExpenseWeb.Controllers
         {
             var expense = await _expenseDbContext.Expenses.FindAsync(id);
             var categories = await _expenseDbContext.Categories.ToListAsync();
+            var tags = await _expenseDbContext.Tags.ToListAsync();
 
             var expenseEdit = new ExpenseEditViewModel
             {
@@ -125,8 +126,13 @@ namespace ExpenseWeb.Controllers
                     {
                         Value = item.Id.ToString(),
                         Text = item.Description,
-                    }
-                )
+                    }),
+                Tags = tags.Select(item =>
+                    new SelectListItem
+                    {
+                        Value = item.Id.ToString(),
+                        Text = item.Name,
+                    })
             };
 
             if (!string.IsNullOrEmpty(expense.PhotoPath))
@@ -148,11 +154,18 @@ namespace ExpenseWeb.Controllers
 
             var origExpense = await _expenseDbContext.Expenses.FindAsync(id);
 
+            var expenseTags = _expenseDbContext.ExpenseTags.Where(x => x.ExpenseId == origExpense.Id);
+
+            foreach (var item in expenseTags)
+            {
+                _expenseDbContext.ExpenseTags.Remove(item);
+            }
+
             origExpense.Description = vm.Description;
             origExpense.Date = vm.Date;
             origExpense.Amount = vm.Amount;
             origExpense.CategoryId = vm.SelectedCategory;
-
+            origExpense.ExpenseTags = vm.SelectedTags.Select(id => new ExpenseTag { TagId = id }).ToList();
 
             if (vm.File != null)
             {

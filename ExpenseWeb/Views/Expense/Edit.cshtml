@@ -20,9 +20,16 @@
 
         <div class="form-group">
             <label asp-for="SelectedCategory"></label>
-            <select asp-for="SelectedCategory" 
+            <select asp-for="SelectedCategory"
                     asp-items="@Model.Categories">
             </select>
+            <span class="text-danger" asp-validation-for="SelectedCategory"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="SelectedTags"></label>
+            <select multiple asp-for="SelectedTags" asp-items="@Model.Tags"></select>
+            <span class="text-danger" asp-validation-for="SelectedTags"></span>
         </div>
 
         <div>
