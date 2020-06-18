@@ -160,14 +160,9 @@ namespace ExpenseWeb.Controllers
                 return View(vm);
             }
 
-            var origExpense = await _expenseDbContext.Expenses.FindAsync(id);
+            var origExpense = await _expenseDbContext.Expenses.Include(x => x.ExpenseTags).FirstOrDefaultAsync(x => x.Id == id);
 
-            var expenseTags = _expenseDbContext.ExpenseTags.Where(x => x.ExpenseId == origExpense.Id);
-
-            foreach (var item in expenseTags)
-            {
-                _expenseDbContext.ExpenseTags.Remove(item);
-            }
+            _expenseDbContext.ExpenseTags.RemoveRange(origExpense.ExpenseTags);
 
             origExpense.Description = vm.Description;
             origExpense.Date = vm.Date;
