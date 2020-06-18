@@ -1,4 +1,6 @@
-﻿<!DOCTYPE html>
+﻿@inject Microsoft.AspNetCore.Hosting.IHostingEnvironment hostingEnv
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -8,7 +10,7 @@
     <link rel="stylesheet" href="~/css/site.css" />
 </head>
 <body>
-    
+
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container">
@@ -35,7 +37,7 @@
     </header>
     <div class="container">
         <environment exclude="Production">
-            <h4 class="ribbon">Development</h4>
+            <h4 class="ribbon">@hostingEnv.EnvironmentName</h4>
         </environment>
         <main role="main" class="pb-3">
             @RenderBody()
