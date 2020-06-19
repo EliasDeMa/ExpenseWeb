@@ -17,5 +17,7 @@ namespace ExpenseWeb.Domain
         public string PhotoPath { get; set; }
 
         public ICollection<ExpenseTag> ExpenseTags { get; set; }
+        public ExpenseAppUser ExpenseAppUser { get; set; }
+        public string ExpenseAppUserId { get; set; }
     }
 }
