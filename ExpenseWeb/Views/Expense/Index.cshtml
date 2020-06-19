@@ -1,4 +1,5 @@
 ﻿@model IEnumerable<ExpenseIndexViewModel>
+@inject SignInManager<ExpenseWeb.Domain.ExpenseAppUser> signInManager
 
 @if (Model == null || !Model.Any())
 {
@@ -32,10 +33,13 @@ else
                     </td>
                 </tr>
             }
-        </tbody> 
+        </tbody>
     </table>
 }
 
-<a asp-controller="Expense" 
-   asp-action="Create"
-   class="btn btn-primary">Add expense</a>
+@if (signInManager.IsSignedIn(User))
+{
+    <a asp-controller="Expense"
+       asp-action="Create"
+       class="btn btn-primary">Add expense</a>
+}
