@@ -1,4 +1,5 @@
 ﻿using ExpenseWeb.Domain;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -7,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace ExpenseWeb.Database
 {
-    public class ExpenseDbContext : DbContext
+    public class ExpenseDbContext : IdentityDbContext<ExpenseAppUser>
     {
         public ExpenseDbContext(DbContextOptions<ExpenseDbContext> options)
             : base(options)
