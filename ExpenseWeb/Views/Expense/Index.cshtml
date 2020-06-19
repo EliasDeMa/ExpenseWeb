@@ -10,7 +10,7 @@ else
     <table cellpadding="5">
         <thead>
             <tr>
-                <th colspan="4">Expenses</th>
+                <th colspan="2">Expenses</th>
             </tr>
         </thead>
         <tbody>
@@ -23,13 +23,16 @@ else
                             Details
                         </a>
 
-                        <a asp-controller="Expense" asp-action="Edit" asp-route-id="@item.Id">
-                            Edit
-                        </a>
+                        @if (signInManager.IsSignedIn(User))
+                        {
+                            <a asp-controller="Expense" asp-action="Edit" asp-route-id="@item.Id">
+                                Edit
+                            </a>
 
-                        <a asp-controller="Expense" asp-action="Delete" asp-route-id="@item.Id">
-                            Delete
-                        </a>
+                            <a asp-controller="Expense" asp-action="Delete" asp-route-id="@item.Id">
+                                Delete
+                            </a>
+                        }
                     </td>
                 </tr>
             }
