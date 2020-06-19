@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using ExpenseWeb.Database;
+using ExpenseWeb.Domain;
 using ExpenseWeb.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -27,10 +29,15 @@ namespace ExpenseWeb
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
+            // services.AddRazorPages();
+
             services.AddTransient<IPhotoService, PhotoService>();
             services.AddDbContext<ExpenseDbContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
+
+            services.AddDefaultIdentity<ExpenseAppUser>()
+                .AddEntityFrameworkStores<ExpenseDbContext>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -51,6 +58,7 @@ namespace ExpenseWeb
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
@@ -58,6 +66,7 @@ namespace ExpenseWeb
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Expense}/{action=Index}/{id?}");
+                endpoints.MapRazorPages();
             });
         }
     }
