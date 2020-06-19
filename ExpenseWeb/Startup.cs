@@ -29,7 +29,7 @@ namespace ExpenseWeb
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
-            // services.AddRazorPages();
+            services.AddRazorPages();
 
             services.AddTransient<IPhotoService, PhotoService>();
             services.AddDbContext<ExpenseDbContext>(options =>
