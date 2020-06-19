@@ -8,6 +8,7 @@ using ExpenseWeb.Database;
 using ExpenseWeb.Domain;
 using ExpenseWeb.Models;
 using ExpenseWeb.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -41,6 +42,7 @@ namespace ExpenseWeb.Controllers
             }).OrderByDescending(item => item.Date).ToList());
         }
 
+        [Authorize]
         public async Task<IActionResult> Create()
         {
             var categories = await _expenseDbContext.Categories.ToListAsync();
@@ -68,6 +70,7 @@ namespace ExpenseWeb.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public async Task<IActionResult> Create(ExpenseCreateViewModel vm)
         {
             if (!TryValidateModel(vm))
@@ -116,6 +119,7 @@ namespace ExpenseWeb.Controllers
             return View(expenseDetail);
         }
 
+        [Authorize]
         public async Task<IActionResult> Edit(int id)
         {
             var expense = await _expenseDbContext.Expenses.Include(x => x.ExpenseTags).FirstOrDefaultAsync(x => x.Id == id);
@@ -153,6 +157,7 @@ namespace ExpenseWeb.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public async Task<IActionResult> Edit(int id, ExpenseEditViewModel vm)
         {
             if (!TryValidateModel(vm))
@@ -185,6 +190,7 @@ namespace ExpenseWeb.Controllers
             return RedirectToAction("Detail", new { Id = id });
         }
 
+        [Authorize]
         public async Task<IActionResult> Delete(int id)
         {
             var expense = await _expenseDbContext.Expenses.FindAsync(id);
@@ -201,6 +207,7 @@ namespace ExpenseWeb.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public async Task<IActionResult> ConfirmDelete(int id)
         {
             var expense = await _expenseDbContext.Expenses.FindAsync(id);
