@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security.Claims;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using ExpenseWeb.Database;
@@ -30,9 +31,13 @@ namespace ExpenseWeb.Controllers
             _logger = logger;
         }
 
+        [Authorize]
         public async Task<IActionResult> Index()
         {
-            var list = await _expenseDbContext.Expenses.ToListAsync();
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var list = await _expenseDbContext.Expenses
+                .Where(x => x.ExpenseAppUserId == userId)
+                .ToListAsync();
 
 
             return View(list.Select(item => new ExpenseIndexViewModel
@@ -78,13 +83,16 @@ namespace ExpenseWeb.Controllers
                 return View(vm);
             }
 
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
             var expense = new Expense
             {
                 Description = vm.Description,
                 Date = vm.Date,
                 Amount = vm.Amount,
                 CategoryId = vm.SelectedCategory,
-                ExpenseTags = vm.SelectedTags.Select(id => new ExpenseTag { TagId = id }).ToList()
+                ExpenseTags = vm.SelectedTags.Select(id => new ExpenseTag { TagId = id }).ToList(),
+                ExpenseAppUserId = userId
             };
 
             if (vm.File != null)
@@ -98,13 +106,16 @@ namespace ExpenseWeb.Controllers
             return RedirectToAction("Index");
         }
 
+        [Authorize]
         public async Task<IActionResult> Detail(int id)
         {
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
             var expense = await _expenseDbContext.Expenses
                 .Include(x => x.Category)
                 .Include(x => x.ExpenseTags)
                 .ThenInclude(et => et.Tag)
-                .FirstOrDefaultAsync(expense => expense.Id == id);
+                .FirstOrDefaultAsync(expense => expense.Id == id && expense.ExpenseAppUserId == userId);
 
             var expenseDetail = new ExpenseDetailViewModel
             {
@@ -122,7 +133,11 @@ namespace ExpenseWeb.Controllers
         [Authorize]
         public async Task<IActionResult> Edit(int id)
         {
-            var expense = await _expenseDbContext.Expenses.Include(x => x.ExpenseTags).FirstOrDefaultAsync(x => x.Id == id);
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            var expense = await _expenseDbContext.Expenses
+                .Include(x => x.ExpenseTags)
+                .FirstOrDefaultAsync(x => x.Id == id && x.ExpenseAppUserId == userId);
             var categories = await _expenseDbContext.Categories.ToListAsync();
             var tags = await _expenseDbContext.Tags.ToListAsync();
 
@@ -165,7 +180,10 @@ namespace ExpenseWeb.Controllers
                 return View(vm);
             }
 
-            var origExpense = await _expenseDbContext.Expenses.Include(x => x.ExpenseTags).FirstOrDefaultAsync(x => x.Id == id);
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var origExpense = await _expenseDbContext.Expenses
+                .Include(x => x.ExpenseTags)
+                .FirstOrDefaultAsync(x => x.Id == id && x.ExpenseAppUserId == userId);
 
             _expenseDbContext.ExpenseTags.RemoveRange(origExpense.ExpenseTags);
 
@@ -193,7 +211,10 @@ namespace ExpenseWeb.Controllers
         [Authorize]
         public async Task<IActionResult> Delete(int id)
         {
-            var expense = await _expenseDbContext.Expenses.FindAsync(id);
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            var expense = await _expenseDbContext.Expenses
+                .FirstOrDefaultAsync(x => x.Id == id && x.ExpenseAppUserId == userId);
 
             var expenseDelete = new ExpenseDeleteViewModel
             {
@@ -210,7 +231,9 @@ namespace ExpenseWeb.Controllers
         [Authorize]
         public async Task<IActionResult> ConfirmDelete(int id)
         {
-            var expense = await _expenseDbContext.Expenses.FindAsync(id);
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var expense = await _expenseDbContext.Expenses
+                .FirstOrDefaultAsync(x => x.Id == id && x.ExpenseAppUserId == userId);
 
             if (!string.IsNullOrEmpty(expense.PhotoPath))
             {
